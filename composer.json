@@ -1,0 +1,14 @@
+{
+    "name": "zephyrhq/vue_datatable_bundle",
+    "description": "Bundle for server processing of vue-table2 lib",
+    "type": "library",
+    "require": {
+        "php": ">=7.2",
+        "symfony/http-foundation": "^4.1",
+        "symfony/config": "^4.1",
+        "symfony/http-kernel": "^4.1",
+        "symfony/dependency-injection": "^4.1",
+        "symfony/routing": "^4.1"
+    },
+    "license": "MIT"
+}
