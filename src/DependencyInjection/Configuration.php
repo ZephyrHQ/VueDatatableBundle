@@ -21,7 +21,6 @@ class Configuration implements ConfigurationInterface
         $rootNode = $tree->root('vue_datatable');
         $rootNode
             ->children()
-                ->scalarNode('provider_class')->isRequired()->end()
                 ->scalarNode('vue_table2_route_name')->isRequired()->end()
         ;
 

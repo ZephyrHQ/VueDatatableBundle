@@ -7,10 +7,9 @@ namespace VueDatatableBundle\Interactor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use VueDatatableBundle\Domain\Datatable;
+use VueDatatableBundle\Domain\Provider\ResultSetInterface;
 use VueDatatableBundle\InputProcessor\DatatableInputProcessorInterface;
 use VueDatatableBundle\Presenter\DatatablePresenterInterface;
-use VueDatatableBundle\Provider\DatatableProviderInterface;
-use VueDatatableBundle\Provider\ResultSetInterface;
 
 /**
  * Class DatatableInteractor.
@@ -25,22 +24,15 @@ class DatatableInteractor implements DatatableInteractorInterface
     private $inputProcessor;
 
     /**
-     * @var DatatableProviderInterface
-     */
-    private $provider;
-
-    /**
      * @var DatatablePresenterInterface
      */
     private $presenter;
 
     public function __construct(
         DatatableInputProcessorInterface $inputProcessor,
-        DatatableProviderInterface $provider,
         DatatablePresenterInterface $presenter)
     {
         $this->inputProcessor = $inputProcessor;
-        $this->provider = $provider;
         $this->presenter = $presenter;
     }
 
@@ -62,7 +54,11 @@ class DatatableInteractor implements DatatableInteractorInterface
         $request = $this->inputProcessor->process($requestData, $datatable);
         $datatable->setRequest($request);
 
-        return $this->provider->getResult($datatable);
+        if ($datatable->getProvider() === null) {
+            throw new \RuntimeException('No datatable provider set in the Datatable object.');
+        }
+
+        return $datatable->getProvider()->getResult($datatable);
     }
 
     /**

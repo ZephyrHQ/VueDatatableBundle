@@ -9,8 +9,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
-use VueDatatableBundle\Interactor\DatatableInteractor;
 use VueDatatableBundle\Presenter\VueTable2Presenter;
 
 /**
@@ -34,7 +32,6 @@ class VueDatatableExtension extends Extension
         }
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->findDefinition(DatatableInteractor::class)->setArgument('$provider', new Reference($config['provider_class']));
         $container->findDefinition(VueTable2Presenter::class)->setArgument('$routeName', $config['vue_table2_route_name']);
     }
 }

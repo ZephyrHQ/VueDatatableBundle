@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use VueDatatableBundle\Domain\Datatable;
-use VueDatatableBundle\Provider\ResultSetInterface;
+use VueDatatableBundle\Domain\Provider\ResultSetInterface;
 
 /**
  * Class VueTable2Presenter.

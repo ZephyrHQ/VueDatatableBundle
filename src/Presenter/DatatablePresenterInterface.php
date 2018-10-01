@@ -6,7 +6,7 @@ namespace VueDatatableBundle\Presenter;
 
 use Symfony\Component\HttpFoundation\Response;
 use VueDatatableBundle\Domain\Datatable;
-use VueDatatableBundle\Provider\ResultSetInterface;
+use VueDatatableBundle\Domain\Provider\ResultSetInterface;
 
 /**
  * Interface DatatablePresenterInterface.

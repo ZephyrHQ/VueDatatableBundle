@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace VueDatatableBundle\Domain;
 
 use VueDatatableBundle\Domain\Column\AbstractColumn;
+use VueDatatableBundle\Domain\Provider\DatatableProviderInterface;
 
 /**
  * Class Datatable.
@@ -23,11 +24,44 @@ class Datatable
      */
     protected $request;
 
+    /**
+     * @var DatatableProviderInterface
+     */
+    protected $provider;
+
+    public function getProvider(): DatatableProviderInterface
+    {
+        return $this->provider;
+    }
+
+    public function setProvider(DatatableProviderInterface $provider): self
+    {
+        $this->provider = $provider;
+
+        return $this;
+    }
+
     public function addColumn(AbstractColumn $column): self
     {
         $this->columns[] = $column;
 
         return $this;
+    }
+
+    /**
+     * @param string $colName the name of column
+     *
+     * @return null|AbstractColumn null if not found
+     */
+    public function findColumn(string $colName): ?AbstractColumn
+    {
+        foreach ($this->columns as $column) {
+            if ($colName === $column->getName()) {
+                return $column;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -50,21 +84,5 @@ class Datatable
         $this->request = $request;
 
         return $this;
-    }
-
-    /**
-     * @param string $colName the name of column
-     *
-     * @return null|AbstractColumn null if not found
-     */
-    public function findColumn(string $colName): ?AbstractColumn
-    {
-        foreach ($this->columns as $column) {
-            if ($colName === $column->getName()) {
-                return $column;
-            }
-        }
-
-        return null;
     }
 }
