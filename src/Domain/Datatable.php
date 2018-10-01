@@ -6,6 +6,11 @@ namespace VueDatatableBundle\Domain;
 
 use VueDatatableBundle\Domain\Column\AbstractColumn;
 
+/**
+ * Class Datatable.
+ *
+ * @author Thomas Talbot <thomas.talbot@zephyr-web.fr>
+ */
 class Datatable
 {
     /**
@@ -45,5 +50,21 @@ class Datatable
         $this->request = $request;
 
         return $this;
+    }
+
+    /**
+     * @param string $colName the name of column
+     *
+     * @return null|AbstractColumn null if not found
+     */
+    public function findColumn(string $colName): ?AbstractColumn
+    {
+        foreach ($this->columns as $column) {
+            if ($colName === $column->getName()) {
+                return $column;
+            }
+        }
+
+        return null;
     }
 }

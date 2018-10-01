@@ -18,10 +18,11 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $tree = new TreeBuilder();
-        $rootNode = $tree->root('vue_datatable_bridge');
+        $rootNode = $tree->root('vue_datatable');
         $rootNode
             ->children()
-                ->scalarNode('toto')->defaultNull()->end()
+                ->scalarNode('provider_class')->isRequired()->end()
+                ->scalarNode('vue_table2_route_name')->isRequired()->end()
         ;
 
         return $tree;

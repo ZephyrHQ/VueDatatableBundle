@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VueDatatableBundle\Domain;
+namespace VueDatatableBundle\Provider;
 
 /**
  * Interface ResultSetInterface.

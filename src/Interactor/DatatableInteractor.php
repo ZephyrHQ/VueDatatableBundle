@@ -7,11 +7,16 @@ namespace VueDatatableBundle\Interactor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use VueDatatableBundle\Domain\Datatable;
-use VueDatatableBundle\Domain\ResultSetInterface;
 use VueDatatableBundle\InputProcessor\DatatableInputProcessorInterface;
 use VueDatatableBundle\Presenter\DatatablePresenterInterface;
 use VueDatatableBundle\Provider\DatatableProviderInterface;
+use VueDatatableBundle\Provider\ResultSetInterface;
 
+/**
+ * Class DatatableInteractor.
+ *
+ * @author Thomas Talbot <thomas.talbot@zephyr-web.fr>
+ */
 class DatatableInteractor implements DatatableInteractorInterface
 {
     /**
@@ -39,6 +44,9 @@ class DatatableInteractor implements DatatableInteractorInterface
         $this->presenter = $presenter;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function handleRequest(Datatable $datatable, Request $request): ResultSetInterface
     {
         return $this->submit($datatable, $request->isMethod('POST')
@@ -46,6 +54,9 @@ class DatatableInteractor implements DatatableInteractorInterface
             : $request->query->all());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function submit(Datatable $datatable, array $requestData): ResultSetInterface
     {
         $request = $this->inputProcessor->process($requestData, $datatable);
@@ -54,6 +65,9 @@ class DatatableInteractor implements DatatableInteractorInterface
         return $this->provider->getResult($datatable);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function createResponse(Datatable $datatable, ResultSetInterface $result): Response
     {
         return $this->presenter->createResponse($datatable, $result);

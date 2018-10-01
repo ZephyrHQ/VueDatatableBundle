@@ -7,7 +7,7 @@ namespace VueDatatableBundle\Interactor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use VueDatatableBundle\Domain\Datatable;
-use VueDatatableBundle\Domain\ResultSetInterface;
+use VueDatatableBundle\Provider\ResultSetInterface;
 
 /**
  * Interface DatatableInteractorInterface.
