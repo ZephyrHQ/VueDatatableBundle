@@ -16,9 +16,9 @@ use VueDatatableBundle\Provider\ResultSetInterface;
  */
 interface DatatableInteractorInterface
 {
-    public function handleRequest(Datatable $datatable, Request $request);
+    public function handleRequest(Datatable $datatable, Request $request): ResultSetInterface;
 
-    public function submit(Datatable $datatable, array $requestData);
+    public function submit(Datatable $datatable, array $requestData): ResultSetInterface;
 
     public function createResponse(Datatable $datatable, ResultSetInterface $result): Response;
 }
