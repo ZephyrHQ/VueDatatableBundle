@@ -2,6 +2,11 @@
     "name": "zephyrhq/vue_datatable_bundle",
     "description": "Bundle for server processing of vue-table2 lib",
     "type": "library",
+    "autoload": {
+        "psr-4": {
+            "VueDatatableBundle\\": "src"
+        }
+    },
     "require": {
         "php": ">=7.2",
         "symfony/http-foundation": "^4.1",
