@@ -38,6 +38,26 @@ class DatatableRequest
      */
     public $orderDir;
 
+    /**
+     * @var array
+     */
+    public $route;
+
+    /**
+     * @var array
+     */
+    public $filters;
+
+    /**
+     * @var array
+     */
+    public $search;
+
+    /**
+     * @var boolean
+     */
+    public $isCallback = false;
+
     public function __construct(int $page, int $perPage, ?AbstractColumn $orderBy = null, ?string $orderDir = null)
     {
         $this->page = $page;
@@ -48,5 +68,11 @@ class DatatableRequest
         }
     }
 
+    public function setRoute($name, $parameters)
+    {
+        $this->route = ['name'=>$name, 'parameters'=>$parameters];
+
+        return $this;
+    }
 //    public $filters;
 }

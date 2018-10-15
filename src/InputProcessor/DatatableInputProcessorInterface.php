@@ -14,5 +14,5 @@ use VueDatatableBundle\Domain\DatatableRequest;
  */
 interface DatatableInputProcessorInterface
 {
-    public function process(array $requestData, Datatable $datatable): DatatableRequest;
+    public function process(\Symfony\Component\HttpFoundation\Request $request, Datatable $datatable): DatatableRequest;
 }

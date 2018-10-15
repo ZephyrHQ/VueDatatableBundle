@@ -16,6 +16,20 @@ vue_datatable:
 
 ## Usage ##
 
+### With Manager ###
+
+```php
+public function productDataAction(Request $request): Response
+{
+    $datatable = $this->get(Datatable{Manager|Provider|Factory|Builder}::class)->getDatatable(DatatableType::class);
+
+    return $datatable->handleRequest($request)->getResponse();
+}
+```
+
+
+### Directly In controller ###
+
 Create a provider that is responsible to retrieve the data from a database or whatever, juste implements the DatatableProviderInterface.
 
 ```php

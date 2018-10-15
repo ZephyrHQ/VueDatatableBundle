@@ -32,6 +32,6 @@ class VueDatatableExtension extends Extension
         }
         $config = $this->processConfiguration($configuration, $configs);
 
-        $container->findDefinition(VueTable2Presenter::class)->setArgument('$routeName', $config['vue_table2_route_name']);
+        //$container->findDefinition(VueTable2Presenter::class)->setArgument('$routeName', $config['vue_table2_route_name']);
     }
 }
