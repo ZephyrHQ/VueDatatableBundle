@@ -2,22 +2,23 @@
 
 declare(strict_types=1);
 
-namespace VueDatatableBundle\Presenter;
+namespace VueDatatableBundle\Infrastructure\VueTable2;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use VueDatatableBundle\Domain\Datatable;
+use VueDatatableBundle\Domain\Presenter\DatatablePresenterInterface;
 use VueDatatableBundle\Domain\Provider\ResultSetInterface;
 
 /**
- * Class VueTable2Presenter.
+ * Class Presenter.
  *
  * @see https://ratiw.github.io/vuetable-2/#/Data-Format-JSON
  *
  * @author Thomas Talbot <thomas.talbot@zephyr-web.fr>
  */
-class VueTable2Presenter implements DatatablePresenterInterface
+class Presenter implements DatatablePresenterInterface
 {
     /**
      * @var RouterInterface
@@ -26,7 +27,6 @@ class VueTable2Presenter implements DatatablePresenterInterface
 
     /**
      * @param RouterInterface $router
-     * @param string          $routeName the route name for generating the nextPageUrl and prevPageUrl
      */
     public function __construct(RouterInterface $router)
     {
@@ -44,18 +44,18 @@ class VueTable2Presenter implements DatatablePresenterInterface
         }
 
         $totalPage = ceil($result->getTotal() / $request->perPage);
-        $route = $datatable->getRouteName();
+        $route = $datatable->getRequest()->route;
 
-        $prevUrl = $this->router->generate($route, [
-            'page' => $request->page - 1,
+        $prevUrl = $this->router->generate($route->name, array_merge($route->parameters, [
+            'page' => max($request->page - 1, 1),
             'per_page' => $request->perPage,
             'sort' => $request->orderBy ? $request->orderBy->getName().'|'.$request->orderDir : null,
-        ]);
-        $nextUrl = $this->router->generate($route, [
-            'page' => $request->page + 1,
+        ]));
+        $nextUrl = $this->router->generate($route->name, array_merge($route->parameters, [
+            'page' => min($request->page + 1, $totalPage),
             'per_page' => $request->perPage,
             'sort' => $request->orderBy ? $request->orderBy->getName().'|'.$request->orderDir : null,
-        ]);
+        ]));
 
         return new JsonResponse([
             'links' => [
@@ -65,7 +65,7 @@ class VueTable2Presenter implements DatatablePresenterInterface
                     'current_page' => $request->page,
                     'next_page_url' => $request->page + 1 <= $totalPage ? $nextUrl : null,
                     'prev_page_url' => $request->page - 1 >= 1 ? $prevUrl : null,
-                    'from' => ($request->page - 1) * $request->perPage + 1,
+                    'from' => min($result->getTotal(), ($request->page - 1) * $request->perPage + 1),
                     'to' => min($result->getTotal(), $request->page * $request->perPage),
                 ],
             ],

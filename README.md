@@ -27,7 +27,6 @@ public function productDataAction(Request $request): Response
 }
 ```
 
-
 ### Directly In controller ###
 
 Create a provider that is responsible to retrieve the data from a database or whatever, juste implements the DatatableProviderInterface.
@@ -77,7 +76,7 @@ class ProductProvider implements DatatableProviderInterface
 ```
 
 In a controller :
-    
+
 ```php
 public function vuetable2Process(Request $request,
     DatatableInteractorInterface $datatableInteractor,

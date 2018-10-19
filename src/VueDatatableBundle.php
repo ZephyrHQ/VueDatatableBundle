@@ -2,7 +2,9 @@
 
 namespace VueDatatableBundle;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+use VueDatatableBundle\DependencyInjection\Compiler\TypePass;
 
 /**
  * Class VueDatatableBundle.
@@ -11,4 +13,8 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class VueDatatableBundle extends Bundle
 {
+    public function build(ContainerBuilder $container): void
+    {
+        $container->addCompilerPass(new TypePass());
+    }
 }

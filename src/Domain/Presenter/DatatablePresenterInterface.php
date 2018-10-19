@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace VueDatatableBundle\Presenter;
+namespace VueDatatableBundle\Domain\Presenter;
 
 use Symfony\Component\HttpFoundation\Response;
 use VueDatatableBundle\Domain\Datatable;

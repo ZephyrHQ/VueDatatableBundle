@@ -13,14 +13,27 @@ abstract class AbstractColumn
 {
     protected $name;
 
-    public function __construct(string $name, $options)
+    protected $options;
+
+    public function __construct(string $name, array $options = [])
     {
         $this->name = $name;
         $this->options = $options;
     }
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 }

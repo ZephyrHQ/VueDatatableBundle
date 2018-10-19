@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace VueDatatableBundle\Domain;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\RouterInterface;
-use Symfony\Flex\Response;
 use VueDatatableBundle\Domain\Column\AbstractColumn;
 use VueDatatableBundle\Domain\Provider\DatatableProviderInterface;
 use VueDatatableBundle\Domain\Provider\ResultSetInterface;
-use VueDatatableBundle\Domain\DatatableInteractor;
 
 /**
  * Class Datatable.
@@ -23,18 +19,17 @@ class Datatable
      * @var int
      */
     public $defaultPage = 1;
+
     /**
      * @var int
      */
     public $defaultPerPage = 10;
-    /**
-     * @var DatatableInteractor
-     */
-    protected $interactor;
+
     /**
      * @var ResultSetInterface
      */
     protected $resultSet;
+
     /**
      * @var AbstractColumn[]
      */
@@ -46,23 +41,9 @@ class Datatable
     protected $request;
 
     /**
-     * @var DatatableRequest
-     */
-    protected $routeName;
-
-    /**
      * @var DatatableProviderInterface
      */
     protected $provider;
-    
-    /**
-     * @param RouterInterface $router
-     * @param string          $routeName the route name for generating the nextPageUrl and prevPageUrl
-     */
-    public function __construct(DatatableInteractor $interactor)
-    {
-        $this->interactor = $interactor;
-    }
 
     public function getProvider(): DatatableProviderInterface
     {
@@ -76,50 +57,49 @@ class Datatable
         return $this;
     }
 
-    public function createProvider($class, $options): self
+    public function addColumn(string $name, string $class, array $options = []): self
     {
-        $this->provider = new $class($options['entity']);
-
-        return $this;
-    }
-
-    public function add(string $name, string $class, ?array $options = []): self
-    {
+        if (!is_subclass_of($class, AbstractColumn::class)) {
+            throw new \RuntimeException(sprintf('$class must be an %s object, %s given.', AbstractColumn::class, $class));
+        }
         $this->columns[$name] = new $class($name, $options);
 
         return $this;
     }
 
     /**
-     * Get Request.
+     * @param string $colName the name of column
      *
+     * @return null|AbstractColumn null if not found
+     */
+    public function findColumn(string $colName): ?AbstractColumn
+    {
+        foreach ($this->columns as $column) {
+            if ($colName === $column->getName()) {
+                return $column;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return DatatableRequest|null
      */
     public function getRequest(): ?DatatableRequest
     {
         return $this->request;
     }
-    
-    /**
-     * @return bool
-     */
-    public function isCallback(): bool
-    {
-        return $this->request->isCallback;
-    }
 
     /**
-     * {@inheritdoc}
+     * @param DatatableRequest|null $request
+     *
+     * @return Datatable
      */
-    public function handleRequest(Request $request): Datatable
+    public function setRequest(?DatatableRequest $request): self
     {
-        $this->request = $this->interactor->handleRequest($this, $request);
+        $this->request = $request;
 
         return $this;
-    }
-
-    public function getResponse(): Response
-    {
-        return $this->interactor->createResponse($this);
     }
 }
