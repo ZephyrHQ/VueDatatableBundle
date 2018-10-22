@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use VueDatatableBundle\Domain\Type\AbstractDatatableType;
-use VueDatatableBundle\Presenter\VueTable2Presenter;
+use VueDatatableBundle\Infrastructure\Doctrine\OrmProvider;
 
 /**
  * Class VueDatatableExtension.
@@ -33,7 +33,11 @@ class VueDatatableExtension extends Extension
         }
         $config = $this->processConfiguration($configuration, $configs);
 
-        //$container->findDefinition(VueTable2Presenter::class)->setArgument('$routeName', $config['vue_table2_route_name']);
+        // TODO : if Doctrine does not exist : remove dependant services (OrmProvider...)
+        if (!class_exists('Doctrine\ORM\EntityManager')
+            || !class_exists('Symfony\Bridge\Doctrine\RegistryInterface')) {
+            $container->removeDefinition(OrmProvider::class);
+        }
 
         $container->registerForAutoconfiguration(AbstractDatatableType::class)
             ->addTag('vue_datatable.type')

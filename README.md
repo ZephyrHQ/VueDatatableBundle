@@ -14,6 +14,8 @@ No config yet.
 
 Create a provider that is responsible to retrieve the data from a database or whatever, just implements the `DatatableProviderInterface`.
 
+You can also use the `OrmProvider` or extend it.
+
 ```php
 namespace App\DatatableProvider;
 

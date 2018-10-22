@@ -26,6 +26,9 @@
         <service id="vue_datatable_bundle.vue_table2.presenter" class="VueDatatableBundle\Infrastructure\VueTable2\Presenter" />
         <service id="VueDatatableBundle\Infrastructure\VueTable2\Presenter" alias="vue_datatable_bundle.vue_table2.presenter" />
 
+        <service id="vue_datatable_bundle.doctrine.orm_provider" class="VueDatatableBundle\Infrastructure\Doctrine\OrmProvider" />
+        <service id="VueDatatableBundle\Infrastructure\Doctrine\OrmProvider" alias="vue_datatable_bundle.doctrine.orm_provider" />
+
         <!-- Defaults -->
         <service id="VueDatatableBundle\Domain\Interactor\DatatableInteractorInterface" alias="vue_datatable_bundle.simple_datatable_interactor" />
 
