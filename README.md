@@ -8,28 +8,11 @@ composer require zephyrhq/vue_datatable_bundle
 
 ## Configuration ##
 
-```yaml
-vue_datatable:
-    # The vue-table2 server processing route
-    vue_table2_route_name: vuetable2_process
-```
+No config yet.
 
 ## Usage ##
 
-### With Manager ###
-
-```php
-public function productDataAction(Request $request): Response
-{
-    $datatable = $this->get(Datatable{Manager|Provider|Factory|Builder}::class)->getDatatable(DatatableType::class);
-
-    return $datatable->handleRequest($request)->getResponse();
-}
-```
-
-### Directly In controller ###
-
-Create a provider that is responsible to retrieve the data from a database or whatever, juste implements the DatatableProviderInterface.
+Create a provider that is responsible to retrieve the data from a database or whatever, just implements the `DatatableProviderInterface`.
 
 ```php
 namespace App\DatatableProvider;
@@ -70,26 +53,62 @@ class ProductProvider implements DatatableProviderInterface
             ],
         ];
 
-        return new ArrayResultSet($data, \count($data), \count($data));
+        $totalCount = \count($data);
+
+        // order, filter and paginate as you need
+        $data = \array_slice($data, ($datatableRequest->page - 1) * $datatableRequest->perPage, $datatableRequest->perPage);
+
+        return new ArrayResultSet($data, $totalCount, $totalCount);
     }
 }
 ```
 
-In a controller :
+Create a type for composing your datatable. Just extends `AbstractDatatableType`. 
+
+```php
+namespace App\DatatableType;
+
+use App\DatatableProvider\ProductProvider;
+use VueDatatableBundle\Domain\Column\SimpleColumn;
+use VueDatatableBundle\Domain\Datatable;
+use VueDatatableBundle\Domain\Type\AbstractDatatableType;
+
+class ProductDatatableType extends AbstractDatatableType
+{
+    /**
+     * @var ProductProvider
+     */
+    private $productProvider;
+
+    public function __construct(ProductProvider $productProvider)
+    {
+        $this->productProvider = $productProvider;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configure(Datatable $datatable): void
+    {
+        $datatable
+            ->setProvider($this->productProvider)
+            ->addColumn('title', SimpleColumn::class, [])
+            ->addColumn('description', SimpleColumn::class, [])
+            ->addColumn('date', SimpleColumn::class, []);
+    }
+}
+```
+
+Finally, in a controller :
 
 ```php
 public function vuetable2Process(Request $request,
     DatatableInteractorInterface $datatableInteractor,
-    ProductProvider $productProvider): Response
+    DatatableFactory $datatableFactory): Response
 {
-    $datatable = (new Datatable())
-        ->addColumn(new StringColumn('toto'))
-        ->addColumn(new StringColumn('description'))
-        ->setProvider($productProvider)
-    ;
+    $datatable = $datatableFactory->createFromType(ProductDatatableType::class);
     $dtResult = $datatableInteractor->handleRequest($datatable, $request);
-    $response = $datatableInteractor->createResponse($datatable, $dtResult);
 
-    return $response;
+    return $datatableInteractor->createResponse($datatable, $dtResult);
 }
 ```
