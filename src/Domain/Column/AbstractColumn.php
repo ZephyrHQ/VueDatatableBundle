@@ -13,9 +13,10 @@ abstract class AbstractColumn
 {
     protected $name;
 
-    public function __construct(string $name)
+    public function __construct(string $name, $options)
     {
         $this->name = $name;
+        $this->options = $options;
     }
 
     public function getName(): string

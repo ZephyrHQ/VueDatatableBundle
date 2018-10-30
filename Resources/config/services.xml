@@ -7,18 +7,10 @@
     <services>
         <defaults autowire="true" autoconfigure="true" public="false" />
 
-        <service id="vue_datatable_bundle.datatable_interactor" class="VueDatatableBundle\Interactor\DatatableInteractor" />
-        <service id="VueDatatableBundle\Interactor\DatatableInteractor" alias="vue_datatable_bundle.datatable_interactor" />
-        <service id="VueDatatableBundle\Interactor\DatatableInteractorInterface" alias="vue_datatable_bundle.datatable_interactor" />
+        <service id="datatable_bundle.builder" class="VueDatatableBundle\DatatableBuilder" public="true" />
+        <service id="VueDatatableBundle\DatatableBuilder" alias="datatable_bundle.builder" public="true" />
 
-        <service id="vue_datatable_bundle.vue_table2_presenter" class="VueDatatableBundle\Presenter\VueTable2Presenter" />
-        <service id="VueDatatableBundle\Presenter\VueTable2Presenter" alias="vue_datatable_bundle.vue_table2_presenter" />
-        <service id="vue_datatable_bundle.presenter" alias="vue_datatable_bundle.vue_table2_presenter" />
-        <service id="VueDatatableBundle\Presenter\DatatablePresenterInterface" alias="vue_datatable_bundle.presenter" />
+        <service id="VueDatatableBundle\Domain\Type\TypeRegistry" />
 
-        <service id="vue_datatable_bundle.vue_table2_input_processor" class="VueDatatableBundle\InputProcessor\VueTable2InputProcessor" />
-        <service id="VueDatatableBundle\InputProcessor\VueTable2InputProcessor" alias="vue_datatable_bundle.vue_table2_input_processor" />
-        <service id="vue_datatable_bundle.input_processor" alias="vue_datatable_bundle.vue_table2_input_processor" />
-        <service id="VueDatatableBundle\InputProcessor\DatatableInputProcessorInterface" alias="vue_datatable_bundle.input_processor" />
     </services>
 </container>

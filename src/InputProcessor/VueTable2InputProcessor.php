@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace VueDatatableBundle\InputProcessor;
 
+use Symfony\Component\HttpFoundation\Request;
 use VueDatatableBundle\Domain\Datatable;
 use VueDatatableBundle\Domain\DatatableRequest;
 
@@ -17,24 +18,33 @@ use VueDatatableBundle\Domain\DatatableRequest;
 class VueTable2InputProcessor implements DatatableInputProcessorInterface
 {
     /**
-     * @param array     $requestData (e.g., parameters from a http request)
+     * @param Request   $request (e.g., parameters from a http request)
      * @param Datatable $datatable
      *
      * @return DatatableRequest
      */
-    public function process(array $requestData, Datatable $datatable): DatatableRequest
+    public function process(Request $request, Datatable $datatable): DatatableRequest
     {
-        $orderBy = $orderDir = null;
+        $requestData = $request->isMethod('POST')
+            ? $request->request->all()
+            : $request->query->all();
+
+        $datatableRequest = new DatatableRequest(
+            (int) ($requestData['page'] ?? $datatable->defaultPage),
+            (int) ($requestData['per_page'] ?? $datatable->defaultPerPage)
+        );
         if (isset($requestData['sort'])) {
-            [$colName, $orderDir] = explode('|', $requestData['sort']);
-            $orderBy = $datatable->findColumn($colName);
+            $fields = explode(',', $requestData['sort']);
+            foreach($fields as $field) {
+                [$orderBy, $orderDir] = explode('|', $field);
+                $datatableRequest->addOrderBy($orderBy, $orderDir);
+            }
         }
 
-        return new DatatableRequest(
-            (int) ($requestData['page'] ?? 1),
-            (int) ($requestData['per_page'] ?? 10),
-            $orderBy,
-            $orderDir
-        );
+        $datatableRequest->setRoute($request->get('_route'), $request->get('_route_params'));
+        $datatableRequest->search = $requestData['filter'] ?? null;
+        $datatableRequest->isCallback = $request->get('page', false)!==false;
+
+        return $datatableRequest;
     }
 }
