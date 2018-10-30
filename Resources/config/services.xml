@@ -10,5 +10,7 @@
         <service id="datatable_bundle.builder" class="VueDatatableBundle\DatatableBuilder" public="true" />
         <service id="VueDatatableBundle\DatatableBuilder" alias="datatable_bundle.builder" public="true" />
 
+        <service id="VueDatatableBundle\Domain\Type\TypeRegistry" />
+
     </services>
 </container>
