@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace VueDatatableBundle\Controller;
 
-use Omines\DataTablesBundle\DataTable;
+use VueDatatableBundle\Domain\Datatable;
 use Psr\Container\ContainerInterface;
 use VueDatatableBundle\DatatableBuilder;
 
@@ -42,7 +42,7 @@ trait DataTablesTrait
      * @param string $type FQCN or service name
      * @param array $typeOptions Type-specific options to be considered
      * @param array $options Options to be passed
-     * @return DataTable
+     * @return Datatable
      */
     protected function createDataTableFromType($type, array $typeOptions = [], array $options = [])
     {

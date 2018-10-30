@@ -27,16 +27,9 @@ class DatatableRequest
     public $perPage;
 
     /**
-     * @var AbstractColumn
+     * @var OrderBy[]
      */
-    public $orderBy;
-
-    /**
-     * @see self::ORDER_*
-     *
-     * @var string
-     */
-    public $orderDir;
+    public $orders;
 
     /**
      * @var array
@@ -58,19 +51,23 @@ class DatatableRequest
      */
     public $isCallback = false;
 
-    public function __construct(int $page, int $perPage, ?AbstractColumn $orderBy = null, ?string $orderDir = null)
+    public function __construct(int $page, int $perPage)
     {
         $this->page = $page;
         $this->perPage = $perPage;
-        $this->orderBy = $orderBy;
-        if ($orderDir !== null && \in_array($orderDir, [self::ORDER_ASC, self::ORDER_DESC], true)) {
-            $this->orderDir = $orderDir;
-        }
     }
+
+    public function addOrderBy($field, $direction)
+    {
+        $this->orders[] = new OrderBy($field, $direction);
+    }
+
 
     public function setRoute($name, $parameters)
     {
-        $this->route = ['name'=>$name, 'parameters'=>$parameters];
+        $this->route = new \stdClass();
+        $this->route->name = $name;
+        $this->route->parameters = $parameters;
 
         return $this;
     }

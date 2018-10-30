@@ -44,32 +44,36 @@ class VueTable2Presenter implements DatatablePresenterInterface
         }
 
         $totalPage = ceil($result->getTotal() / $request->perPage);
-        $route = $datatable->getRouteName();
+        $route = $datatable->getRequest()->route->name;
 
         $prevUrl = $this->router->generate($route, [
             'page' => $request->page - 1,
             'per_page' => $request->perPage,
-            'sort' => $request->orderBy ? $request->orderBy->getName().'|'.$request->orderDir : null,
+            'sort' => $this->getSort($request),
         ]);
         $nextUrl = $this->router->generate($route, [
             'page' => $request->page + 1,
             'per_page' => $request->perPage,
-            'sort' => $request->orderBy ? $request->orderBy->getName().'|'.$request->orderDir : null,
+            'sort' => $this->getSort($request),
         ]);
 
         return new JsonResponse([
-            'links' => [
-                'pagination' => [
-                    'total' => $result->getTotal(),
-                    'per_page' => $request->perPage,
-                    'current_page' => $request->page,
-                    'next_page_url' => $request->page + 1 <= $totalPage ? $nextUrl : null,
-                    'prev_page_url' => $request->page - 1 >= 1 ? $prevUrl : null,
-                    'from' => ($request->page - 1) * $request->perPage + 1,
-                    'to' => min($result->getTotal(), $request->page * $request->perPage),
-                ],
-            ],
+            'total' => $result->getTotal(),
+            'per_page' => $request->perPage,
+            'current_page' => $request->page,
+            'last_page' => ceil($result->getTotal()/$request->perPage),
+            'next_page_url' => $request->page + 1 <= $totalPage ? $nextUrl : null,
+            'prev_page_url' => $request->page - 1 >= 1 ? $prevUrl : null,
+            'from' => ($request->page - 1) * $request->perPage + 1,
+            'to' => min($result->getTotal(), $request->page * $request->perPage),
             'data' => iterator_to_array($result->getData(), true),
         ]);
+    }
+
+    protected function getSort(\VueDatatableBundle\Domain\DatatableRequest $request)
+    {
+        return join(',', array_map(function(\VueDatatableBundle\Domain\OrderBy $order){
+            return $order->getColumn() . '|' . $order->getOrder();
+        }, $request->orders));
     }
 }

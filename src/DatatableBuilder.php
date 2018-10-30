@@ -8,7 +8,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use VueDatatableBundle\Domain\Datatable;
 use VueDatatableBundle\Domain\DatatableInteractor;
+use VueDatatableBundle\Domain\Provider\DatatableProviderInterface;
+use VueDatatableBundle\Domain\Provider\ORMAble;
 use VueDatatableBundle\Domain\Type\DatatableTypeInterface;
+use VueDatatableBundle\Domain\Type\TypeRegistry;
 use VueDatatableBundle\Domain\Type\VueTable2TypeInterface;
 use VueDatatableBundle\InputProcessor\VueTable2InputProcessor;
 use VueDatatableBundle\Presenter\VueTable2Presenter;
@@ -31,20 +34,29 @@ class DatatableBuilder
      * @var EntityManagerInterface
      */
     protected $entityManager;
+    /**
+     * @var TypeRegistry
+     */
+    protected $registry;
 
     /**
      * @param RouterInterface $router
      */
-    public function __construct(RouterInterface $router, EntityManagerInterface $entityManager)
+    public function __construct(RouterInterface $router, EntityManagerInterface $entityManager, TypeRegistry $registry)
     {
         $this->router = $router;
         $this->entityManager = $entityManager;
+        $this->registry = $registry;
     }
 
-    public function createFromType(string $typeName, array $options): Datatable
+    public function createFromType(string $typeClass, array $options): Datatable
     {
         /** @var $type \VueDatatableBundle\Domain\DatatableTypeInterface */
-        $type =  new $typeName();
+//        if (!class($typeClass, AbstractDatatableType::class)) {
+//            throw new \RuntimeException(sprintf('$typeClass must be an %s object, %s given.', AbstractDatatableType::class, $typeClass));
+//        }
+        $type = $this->registry->getType($typeClass);
+
         $interactor = $this->getInteractor($type);
         $datatable = new Datatable($interactor);
         $type->configure($datatable, $options);
@@ -66,9 +78,9 @@ class DatatableBuilder
         throw new InvalidArgumentException('The type should implements one of there DatatabletypeInterface: VueTable2TypeInterface');
     }
 
-    protected function injectProviderDependencies(Domain\Provider\DatatableProviderInterface $provider)
+    protected function injectProviderDependencies(DatatableProviderInterface $provider)
     {
-        if($provider instanceof \VueDatatableBundle\Domain\Provider\ORMAble) {
+        if($provider instanceof ORMAble) {
             $provider->setEntityManager($this->entityManager);
         }
     }

@@ -29,21 +29,21 @@ class VueTable2InputProcessor implements DatatableInputProcessorInterface
             ? $request->request->all()
             : $request->query->all();
 
-        $orderBy = $orderDir = null;
-        if (isset($requestData['sort'])) {
-            [$colName, $orderDir] = explode('|', $requestData['sort']);
-            $orderBy = $datatable->findColumn($colName);
-        }
-
         $datatableRequest = new DatatableRequest(
             (int) ($requestData['page'] ?? $datatable->defaultPage),
-            (int) ($requestData['per_page'] ?? $datatable->defaultPerPage),
-            $orderBy,
-            $orderDir
+            (int) ($requestData['per_page'] ?? $datatable->defaultPerPage)
         );
+        if (isset($requestData['sort'])) {
+            $fields = explode(',', $requestData['sort']);
+            foreach($fields as $field) {
+                [$orderBy, $orderDir] = explode('|', $field);
+                $datatableRequest->addOrderBy($orderBy, $orderDir);
+            }
+        }
+
         $datatableRequest->setRoute($request->get('_route'), $request->get('_route_params'));
         $datatableRequest->search = $requestData['filter'] ?? null;
-        $datatableRequest->isCallback = $request->isXmlHttpRequest();
+        $datatableRequest->isCallback = $request->get('page', false)!==false;
 
         return $datatableRequest;
     }

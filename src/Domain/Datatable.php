@@ -90,6 +90,11 @@ class Datatable
         return $this;
     }
 
+    public function getColumn(string $name): AbstractColumn
+    {
+        return $this->columns[$name];
+    }
+
     /**
      * Get Request.
      *
@@ -118,7 +123,7 @@ class Datatable
         return $this;
     }
 
-    public function getResponse(): Response
+    public function getResponse(): \Symfony\Component\HttpFoundation\Response
     {
         return $this->interactor->createResponse($this);
     }

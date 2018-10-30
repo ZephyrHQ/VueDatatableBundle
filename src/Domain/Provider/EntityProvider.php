@@ -32,7 +32,12 @@ class EntityProvider implements DatatableProviderInterface, ORMAble
 
     public function getQueryBuilder(): QueryBuilder
     {
-        return $this->entityManager->getRepository($this->entity)->createQueryBuilder($this->entity);
+        return $this->entityManager->getRepository($this->entity)->createQueryBuilder($this->getRootAlias());
+    }
+
+    protected function getRootAlias()
+    {
+        return preg_replace("/\\\\/", '', $this->entity);
     }
 
     public function getResult(Datatable $datatable): ResultSetInterface
@@ -40,19 +45,20 @@ class EntityProvider implements DatatableProviderInterface, ORMAble
         $datatableRequest = $datatable->getRequest();
         $page = $datatableRequest->page;
         $perPage = $datatableRequest->perPage;
-        $orderBy = $datatableRequest->orderBy->getName();
-        $orderDir = $datatableRequest->orderDir;
 
         $queryBuilderCount = $this->getQueryBuilder();
-        $queryBuilderCount->select('COUNT('.$this->entity.')');
+        $queryBuilderCount->select('COUNT('.$this->getRootAlias().')');
         $total = $queryBuilderCount->getQuery()->getSingleScalarResult();
 
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
-            ->addOrderBy($orderBy, $orderDir)
             ->setFirstResult(($page-1)*$perPage)
-            ->setMaxResult($perPage)
+            ->setMaxResults($perPage)
         ;
+        foreach($datatableRequest->orders as $order) {
+            $column = $this->getRootAlias() . '.' . $datatable->getColumn($order->getColumn())->getName();
+            $queryBuilder->addOrderBy($column, $order->getOrder());
+        }
 
         $data = $queryBuilder->getQuery()->getArrayResult();
 
