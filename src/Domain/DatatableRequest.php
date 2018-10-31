@@ -29,7 +29,7 @@ class DatatableRequest
     /**
      * @var OrderBy[]
      */
-    public $orders;
+    public $orders = [];
 
     /**
      * @var array
@@ -39,7 +39,7 @@ class DatatableRequest
     /**
      * @var array
      */
-    public $filters;
+    public $filters = [];
 
     /**
      * @var array
