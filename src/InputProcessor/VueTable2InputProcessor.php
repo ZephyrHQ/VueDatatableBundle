@@ -35,8 +35,12 @@ class VueTable2InputProcessor implements DatatableInputProcessorInterface
         );
         if (isset($requestData['sort'])) {
             $fields = explode(',', $requestData['sort']);
-            foreach($fields as $field) {
-                [$orderBy, $orderDir] = explode('|', $field);
+            foreach ($fields as $field) {
+                $sorts = explode('|', $field);
+                if (count($sorts)<2) {
+                    continue;
+                }
+                [$orderBy, $orderDir] = $sorts;
                 $datatableRequest->addOrderBy($orderBy, $orderDir);
             }
         }
