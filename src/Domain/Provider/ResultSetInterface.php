@@ -14,4 +14,5 @@ interface ResultSetInterface
     public function getTotal(): int;
     public function getDisplayedTotal(): int;
     public function getData(): \Iterator;
+    public function format(callable $formatter);
 }

@@ -54,7 +54,11 @@ class DatatableInteractor
         if ( ! ($provider = $datatable->getProvider()) instanceof DatatableProviderInterface) {
             throw new RuntimeException('No suitable datatable provider set in the Datatable object.');
         }
+        $resulset = $provider->getResult($datatable);
+        if(is_callable($datatable->getFormatter())) {
+            $resulset->format($datatable->getFormatter());
+        }
 
-        return $this->presenter->createResponse($datatable, $provider->getResult($datatable));
+        return $this->presenter->createResponse($datatable, $resulset);
     }
 }

@@ -54,6 +54,11 @@ class Datatable
      * @var DatatableProviderInterface
      */
     protected $provider;
+
+    /**
+     * @var callable
+     */
+    protected $formatter;
     
     /**
      * @param RouterInterface $router
@@ -64,7 +69,7 @@ class Datatable
         $this->interactor = $interactor;
     }
 
-    public function getProvider(): DatatableProviderInterface
+    public function getProvider(): ?DatatableProviderInterface
     {
         return $this->provider;
     }
@@ -81,6 +86,18 @@ class Datatable
         $this->provider = new $class($options['entity']);
 
         return $this;
+    }
+
+    public function setFormatter(callable $formatter): self
+    {
+        $this->formatter = $formatter;
+
+        return $this;
+    }
+
+    public function getFormatter(): ?callable
+    {
+        return $this->formatter;
     }
 
     public function add(string $name, string $class, ?array $options = []): self

@@ -75,7 +75,7 @@ class QueryBuilderProvider implements DatatableProviderInterface, ORMAble
         ;
         
 
-        $data = $queryBuilder->getQuery()->getArrayResult();
+        $data = json_decode(json_encode($queryBuilder->getQuery()->getResult()), true);
 
         return new ArrayResultSet($data, $total, count($data));
     }
