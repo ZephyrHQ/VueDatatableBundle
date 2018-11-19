@@ -39,10 +39,33 @@ class QueryBuilderProvider implements DatatableProviderInterface, ORMAble
     protected function getQueryBuilder(Datatable $datatable)
     {
         $datatableRequest = $datatable->getRequest();
+        /* @var $queryBuilder QueryBuilder */
         $queryBuilder = clone $this->queryBuilder;
         foreach($datatableRequest->orders as $order) {
             $column = $this->getRootAlias() . '.' . $datatable->getColumn($order->getColumn())->getName();
             $queryBuilder->addOrderBy($column, $order->getOrder());
+        }
+
+        /* @var $filter \VueDatatableBundle\Domain\Filter */
+        foreach($datatableRequest->filters as $filter) {
+            $column = $this->getRootAlias() . '.' . $datatable->getColumn($filter->getColumn())->getName();
+            $parameterName = preg_replace('#\.#', '', $column) . 'Parameter';
+            if( ! is_array($filter->getValue())) {
+                $queryBuilder->andWhere("$column = :$parameterName");
+            } else {
+                $queryBuilder->andWhere("$column IN (:$parameterName)");
+            }
+            $queryBuilder->setParameter($parameterName, $filter->getValue());
+        }
+
+        if($datatableRequest->search) {
+            $orStatements = $queryBuilder->expr()->orX();
+            foreach($datatable->getSearchableColumns() as $column) {
+                $orStatements->add(
+                    $queryBuilder->expr()->like($column->getName(), $queryBuilder->expr()->literal('%' . $datatableRequest->search . '%'))
+                );
+            }
+            $queryBuilder->andWhere($orStatements);
         }
 
         return $queryBuilder;

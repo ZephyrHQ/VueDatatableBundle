@@ -112,6 +112,13 @@ class Datatable
         return $this->columns[$name];
     }
 
+    public function getSearchableColumns(): array
+    {
+        return array_filter($this->columns, function(AbstractColumn $column){
+            return $column->isSearchable();
+        });
+    }
+
     /**
      * Get Request.
      *
