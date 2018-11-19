@@ -42,7 +42,7 @@ class DatatableRequest
     public $filters = [];
 
     /**
-     * @var array
+     * @var string
      */
     public $search;
 
@@ -62,6 +62,10 @@ class DatatableRequest
         $this->orders[] = new OrderBy($field, $direction);
     }
 
+    public function addFilter($field, $value)
+    {
+        $this->filters[] = new Filter($field, $value);
+    }
 
     public function setRoute($name, $parameters)
     {

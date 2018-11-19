@@ -60,9 +60,12 @@ class DatatableBuilder
         $interactor = $this->getInteractor($type);
         $datatable = new Datatable($interactor);
         $type->configure($datatable, $options);
-        $provider = $type->getProvider();
+
+        $provider = $datatable->getProvider();
+        if(null===$provider) {
+            throw new \Exception('A data provider should be configured in the configure method.');
+        }
         $this->injectProviderDependencies($provider);
-        $datatable->setProvider($provider);
 
         return $datatable;
     }

@@ -13,5 +13,4 @@ use VueDatatableBundle\Domain\Provider\DatatableProviderInterface;
 interface DatatableTypeInterface
 {
     public function configure(Datatable $datatable, array $options);
-    public function getProvider() : DatatableProviderInterface;
 }

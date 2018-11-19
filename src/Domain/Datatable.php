@@ -54,6 +54,11 @@ class Datatable
      * @var DatatableProviderInterface
      */
     protected $provider;
+
+    /**
+     * @var callable
+     */
+    protected $formatter;
     
     /**
      * @param RouterInterface $router
@@ -64,7 +69,7 @@ class Datatable
         $this->interactor = $interactor;
     }
 
-    public function getProvider(): DatatableProviderInterface
+    public function getProvider(): ?DatatableProviderInterface
     {
         return $this->provider;
     }
@@ -83,6 +88,18 @@ class Datatable
         return $this;
     }
 
+    public function setFormatter(callable $formatter): self
+    {
+        $this->formatter = $formatter;
+
+        return $this;
+    }
+
+    public function getFormatter(): ?callable
+    {
+        return $this->formatter;
+    }
+
     public function add(string $name, string $class, ?array $options = []): self
     {
         $this->columns[$name] = new $class($name, $options);
@@ -93,6 +110,13 @@ class Datatable
     public function getColumn(string $name): AbstractColumn
     {
         return $this->columns[$name];
+    }
+
+    public function getSearchableColumns(): array
+    {
+        return array_filter($this->columns, function(AbstractColumn $column){
+            return $column->isSearchable();
+        });
     }
 
     /**

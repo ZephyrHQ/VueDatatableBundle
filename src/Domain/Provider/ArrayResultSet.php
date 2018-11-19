@@ -45,4 +45,10 @@ final class ArrayResultSet implements ResultSetInterface
     {
         return new \ArrayIterator($this->data);
     }
+
+    public function format(callable $formatter)
+    {
+        $this->data = $formatter($this->data);
+    }
+
 }

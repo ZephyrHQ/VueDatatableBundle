@@ -44,9 +44,14 @@ class VueTable2InputProcessor implements DatatableInputProcessorInterface
                 $datatableRequest->addOrderBy($orderBy, $orderDir);
             }
         }
+        if (isset($requestData['filters'])) {
+            foreach (json_decode($requestData['filters'], true) as $field=>$value) {
+                $datatableRequest->addFilter($field, $value);
+            }
+        }
 
         $datatableRequest->setRoute($request->get('_route'), $request->get('_route_params'));
-        $datatableRequest->search = $requestData['filter'] ?? null;
+        $datatableRequest->search = $requestData['search'] ?? null;
         $datatableRequest->isCallback = $request->get('page', false)!==false;
 
         return $datatableRequest;

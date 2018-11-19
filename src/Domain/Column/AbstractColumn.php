@@ -23,4 +23,9 @@ abstract class AbstractColumn
     {
         return $this->name;
     }
+
+    public function isSearchable(): string
+    {
+        return $this->options['searchable'] === true;
+    }
 }
